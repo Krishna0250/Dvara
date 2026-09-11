@@ -3,11 +3,11 @@ version: '3.8'
 services:
   mysqldb:
     image: mysql:8.0
-    container_name: lexflow-mysql
+    container_name: dvara-mysql
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: lexflow_case_db
+      MYSQL_DATABASE: dvara
     ports:
       - "3306:3306"
     volumes:
@@ -15,43 +15,43 @@ services:
 
   case-service:
     build: ./backend/case-service
-    container_name: lexflow-case-service
+    container_name: dvara-case-service
     ports:
       - "8081:8081"
     depends_on:
       - mysqldb
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/lexflow_case_db?useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/dvara?useSSL=false&allowPublicKeyRetrieval=true
 
   workflow-service:
     build: ./backend/workflow-service
-    container_name: lexflow-workflow-service
+    container_name: dvara-workflow-service
     ports:
       - "8082:8082"
     depends_on:
       - mysqldb
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/lexflow_workflow_db?useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/dvara?useSSL=false&allowPublicKeyRetrieval=true
 
   hearing-service:
     build: ./backend/hearing-service
-    container_name: lexflow-hearing-service
+    container_name: dvara-hearing-service
     ports:
       - "8083:8083"
     depends_on:
       - mysqldb
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/lexflow_hearing_db?useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/dvara?useSSL=false&allowPublicKeyRetrieval=true
 
   document-service:
     build: ./backend/document-service
-    container_name: lexflow-document-service
+    container_name: dvara-document-service
     ports:
       - "8084:8084"
     depends_on:
       - mysqldb
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/lexflow_document_db?useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/dvara?useSSL=false&allowPublicKeyRetrieval=true
 
 volumes:
   mysql_data:

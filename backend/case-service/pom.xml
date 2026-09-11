@@ -4,11 +4,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     
-    <groupId>com.lexflow</groupId>
+    <groupId>com.dvara</groupId>
     <artifactId>case-service</artifactId>
     <version>1.0.0</version>
     <name>case-service</name>
-    <description>LexFlow Case Management Microservice</description>
+    <description>Dvara Case Management Microservice</description>
 
     <parent>
         <groupId>org.springframework.boot</groupId>

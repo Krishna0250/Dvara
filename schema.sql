@@ -1,5 +1,5 @@
 -- ==============================================================================
--- LexFlow Master Database Schema & Initial Seed Data
+-- Dvara Master Database Schema & Initial Seed Data
 -- Compatible with MySQL 8.0+
 -- Run this in your MySQL client (VS Code MySQL extension, MySQL Workbench, etc.)
 -- ==============================================================================
@@ -138,11 +138,11 @@ CREATE TABLE IF NOT EXISTS `documents` (
 
 -- Seed Users
 INSERT INTO `users` (`id`, `email`, `password`, `name`, `role`) VALUES
-('u-1', 'judge@lexflow.gov', 'password', 'Hon''ble Justice A. K. Sikri', 'JUDGE'),
-('u-2', 'registrar@lexflow.gov', 'password', 'Registrar V. K. Deshmukh', 'REGISTRAR'),
-('u-3', 'scrutiny@lexflow.gov', 'password', 'Officer Priya Nair', 'SCRUTINY_OFFICER'),
-('u-4', 'advocate@lexflow.org', 'password', 'Adv. Rajesh Verma', 'ADVOCATE'),
-('u-5', 'citizen@lexflow.org', 'password', 'Rohan Kumar (Litigant)', 'CITIZEN')
+('u-1', 'judge@dvara.gov', 'password', 'Hon''ble Justice A. K. Sikri', 'JUDGE'),
+('u-2', 'registrar@dvara.gov', 'password', 'Registrar V. K. Deshmukh', 'REGISTRAR'),
+('u-3', 'scrutiny@dvara.gov', 'password', 'Officer Priya Nair', 'SCRUTINY_OFFICER'),
+('u-4', 'advocate@dvara.org', 'password', 'Adv. Rajesh Verma', 'ADVOCATE'),
+('u-5', 'citizen@dvara.org', 'password', 'Rohan Kumar (Litigant)', 'CITIZEN')
 ON DUPLICATE KEY UPDATE `email`=`email`;
 
 -- Seed Cases

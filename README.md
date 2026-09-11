@@ -1,4 +1,4 @@
-# LexFlow — Distributed Judicial Workflow & Case Management Platform
+# Dvara — Distributed Judicial Workflow & Case Management Platform
 
 [![Java](https://img.shields.io/badge/Java-17%2B-ED8B00?logo=openjdk&logoColor=white)](https://openjdk.org/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2.3-6DB33F?logo=springboot&logoColor=white)](https://spring.io/projects/spring-boot)
@@ -8,7 +8,7 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-4.0-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 [![Database](https://img.shields.io/badge/Database-MySQL%20%2F%20H2-4479A1?logo=mysql&logoColor=white)](https://www.mysql.com/)
 
-**LexFlow** is a distributed, enterprise-grade judicial case management and procedural litigation platform. Designed around Indian procedural law (**Code of Civil Procedure (CPC)**, **Bharatiya Nagarik Suraksha Sanhita (BNSS)**, and the **Negotiable Instruments Act (Sec 138)**), LexFlow eliminates procedural bottlenecks through a state-machine driven procedural workflow engine, digital document scrutiny with deficiency loops, role-based access control (RBAC), and tamper-evident audit logging.
+**Dvara** is a distributed, enterprise-grade judicial case management and procedural litigation platform. Designed around Indian procedural law (**Code of Civil Procedure (CPC)**, **Bharatiya Nagarik Suraksha Sanhita (BNSS)**, and the **Negotiable Instruments Act (Sec 138)**), Dvara eliminates procedural bottlenecks through a state-machine driven procedural workflow engine, digital document scrutiny with deficiency loops, role-based access control (RBAC), and tamper-evident audit logging.
 
 ---
 
@@ -141,7 +141,7 @@
 
 ## 🧪 Automated Testing Suite
 
-LexFlow includes a **JUnit 5 & Mockito test suite** validating critical business invariants:
+Dvara includes a **JUnit 5 & Mockito test suite** validating critical business invariants:
 
 ```bash
 # Run unit tests in case-service
@@ -208,11 +208,11 @@ You can switch personas at any time using the **Role Switcher** in the top-right
 
 | Persona | Name | Credentials | Key Action to Demonstrate |
 | :--- | :--- | :--- | :--- |
-| **Judge** | Hon'ble Justice A. K. Sikri | `judge@lexflow.gov` / `password` | Open Case Dossier ➔ Orders Tab ➔ Click **"Issue Formal Order"** |
-| **Registrar** | Registrar V. K. Deshmukh | `registrar@lexflow.gov` / `password` | Scrutiny Queue ➔ Click **"Approve Registration"** to allocate Case Number |
-| **Scrutiny Officer** | Officer Priya Nair | `scrutiny@lexflow.gov` / `password` | Scrutiny Queue ➔ Select Petition ➔ Click **"Raise Deficiency"** |
-| **Advocate** | Adv. Rajesh Verma | `advocate@lexflow.org` / `password` | Scrutiny Queue ➔ Click **"Respond & Submit Re-uploaded Document"** |
-| **Litigant / Citizen** | Rohan Kumar | `citizen@lexflow.org` / `password` | Track personal petition filing status & review hearing notices |
+| **Judge** | Hon'ble Justice A. K. Sikri | `judge@dvara.gov` / `password` | Open Case Dossier ➔ Orders Tab ➔ Click **"Issue Formal Order"** |
+| **Registrar** | Registrar V. K. Deshmukh | `registrar@dvara.gov` / `password` | Scrutiny Queue ➔ Click **"Approve Registration"** to allocate Case Number |
+| **Scrutiny Officer** | Officer Priya Nair | `scrutiny@dvara.gov` / `password` | Scrutiny Queue ➔ Select Petition ➔ Click **"Raise Deficiency"** |
+| **Advocate** | Adv. Rajesh Verma | `advocate@dvara.org` / `password` | Scrutiny Queue ➔ Click **"Respond & Submit Re-uploaded Document"** |
+| **Litigant / Citizen** | Rohan Kumar | `citizen@dvara.org` / `password` | Track personal petition filing status & review hearing notices |
 
 ---
 

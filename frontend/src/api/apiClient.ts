@@ -12,7 +12,7 @@ const ALL_HEARINGS = INITIAL_CASES.flatMap(c => c.hearings || []);
 const ALL_DEADLINES = INITIAL_CASES.flatMap(c => c.deadlines || []);
 const ALL_DOCUMENTS = INITIAL_CASES.flatMap(c => c.documents || []);
 
-let currentAuthToken = localStorage.getItem('lexflow_jwt') || '';
+let currentAuthToken = localStorage.getItem('dvara_jwt') || '';
 
 // Axios interceptor to attach JWT bearer token to every outgoing request
 axios.interceptors.request.use((config) => {
@@ -37,7 +37,7 @@ export const setAuthTokenForRole = async (role: string) => {
     const res = await axios.get(`${CASE_SERVICE_BASE}/auth/token?role=${role}`);
     if (res.data?.token) {
       currentAuthToken = res.data.token;
-      localStorage.setItem('lexflow_jwt', res.data.token);
+      localStorage.setItem('dvara_jwt', res.data.token);
     }
   } catch {
     // If backend offline, create local HMAC-demo token
