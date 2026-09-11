@@ -1,7 +1,6 @@
 <div align="center">
 
-  # ⚖️ DVARA (द्वार)
-  ### Distributed Judicial Workflow & Case Intelligence Platform
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=1,12,24,31&height=220&section=header&text=DVARA%20%E2%9A%96%EF%B8%8F&fontSize=65&fontColor=ffffff&animation=fadeIn&fontAlignY=38&desc=Distributed%20Judicial%20Workflow%20%26%20Litigation%20Intelligence%20Platform&descSize=19&descAlignY=62" width="100%" alt="Dvara Banner" />
 
   <p align="center">
     <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=700&size=24&pause=1200&color=6366F1&center=true&vCenter=true&width=650&lines=Dvara+%E2%80%94+Digital+Gateway+to+Justice;State-Machine+Litigation+Workflow+Engine;Spring+Boot+3+Microservices+%2B+React+19;Statutory+Procedural+Intelligence+(CPC+%2B+BNSS);Tamper-Evident+Audit+Trail+%2B+JWT+RBAC" alt="Dvara Animated Banner" />
@@ -26,6 +25,13 @@
   <p align="center">
     <strong>Dvara</strong> (Sanskrit for <em>Gateway / Threshold</em>) is an enterprise-grade judicial litigation platform modeling Indian civil & criminal procedural statutory law (<strong>CPC Order VIII</strong>, <strong>BNSS Sec 103</strong>, and <strong>Negotiable Instruments Act Sec 138</strong>).
   </p>
+
+  <br />
+
+  <p align="center">
+    <img src="./assets/dvara_dashboard.png" alt="Dvara Modern Dashboard UI" width="95%" style="border-radius: 12px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);" />
+  </p>
+  <p align="center"><em>✨ Dvara Unified Judicial Cockpit — Advocate Priority Radar, Hearing Tracking & Scrutiny Workflow</em></p>
 
 </div>
 
@@ -274,4 +280,6 @@ Switch personas at any time using the **Role Switcher** in the top-right header:
 
 <div align="center">
   <sub>Built with ❤️ by <a href="https://github.com/Krishna0250">Krishna0250</a>. Licensed under the MIT License.</sub>
+  <br /><br />
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=1,12,24,31&height=120&section=footer" width="100%" alt="Dvara Footer" />
 </div>
