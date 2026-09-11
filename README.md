@@ -4,7 +4,7 @@
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2.3-6DB33F?logo=springboot&logoColor=white)](https://spring.io/projects/spring-boot)
 [![Spring Security](https://img.shields.io/badge/Spring%20Security-JWT%20RBAC-green?logo=springsecurity&logoColor=white)](https://spring.io/projects/spring-security)
 [![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)](https://react.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0%2B-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![JavaScript](https://img.shields.io/badge/JavaScript-ES6%2B%20%2F%20JSX-F7DF1E?logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-4.0-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 [![Database](https://img.shields.io/badge/Database-MySQL%20%2F%20H2-4479A1?logo=mysql&logoColor=white)](https://www.mysql.com/)
 
@@ -17,7 +17,7 @@
 ```
                                   ┌────────────────────────┐
                                   │      REACT 19 SPA      │
-                                  │  TypeScript + Tailwind │
+                                  │ JavaScript (ES6+ / JSX)│
                                   │   (Port 5173 / Vite)   │
                                   └───────────┬────────────┘
                                               │

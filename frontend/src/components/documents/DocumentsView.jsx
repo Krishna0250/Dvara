@@ -1,30 +1,16 @@
-import React, { useState } from 'react';
-import { FileText, Upload, Download, FileCheck } from 'lucide-react';
-import type { Case } from '../../types/legal';
-
-
-interface DocumentsViewProps {
-  cases: Case[];
-  onSelectCase?: (caseId: string) => void;
-}
-
-export const DocumentsView: React.FC<DocumentsViewProps> = ({ cases }) => {
-  const [selectedType, setSelectedType] = useState<string>('All');
-  const [searchTerm, setSearchTerm] = useState<string>('');
-
-
-  const allDocuments = cases.flatMap(c => c.documents);
-
-  const docTypes = ['All', 'FIR', 'Complaint', 'Notice', 'Court Order', 'Evidence', 'Witness Statement', 'Charge-sheet', 'Plaint', 'Petition'];
-
-  const filteredDocs = allDocuments.filter(d => {
-    const matchesType = selectedType === 'All' || d.type === selectedType;
+import { useState } from "react";
+import { FileText, Upload, Download, FileCheck } from "lucide-react";
+export const DocumentsView = ({ cases }) => {
+  const [selectedType, setSelectedType] = useState("All");
+  const [searchTerm, setSearchTerm] = useState("");
+  const allDocuments = cases.flatMap((c) => c.documents);
+  const docTypes = ["All", "FIR", "Complaint", "Notice", "Court Order", "Evidence", "Witness Statement", "Charge-sheet", "Plaint", "Petition"];
+  const filteredDocs = allDocuments.filter((d) => {
+    const matchesType = selectedType === "All" || d.type === selectedType;
     const matchesSearch = d.name.toLowerCase().includes(searchTerm.toLowerCase()) || d.caseId.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesType && matchesSearch;
   });
-
-  return (
-    <div className="p-8 space-y-6 max-w-[1600px] mx-auto">
+  return <div className="p-8 space-y-6 max-w-[1600px] mx-auto">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
@@ -40,30 +26,24 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({ cases }) => {
 
       <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs">
         <input
-          type="text"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Search documents by name or case #..."
-          className="w-full sm:w-80 px-3 py-2 text-xs border border-slate-200 rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        />
+    type="text"
+    value={searchTerm}
+    onChange={(e) => setSearchTerm(e.target.value)}
+    placeholder="Search documents by name or case #..."
+    className="w-full sm:w-80 px-3 py-2 text-xs border border-slate-200 rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+  />
       </div>
 
       <div className="flex flex-wrap items-center gap-2 border-b border-slate-200 pb-3">
 
         <span className="text-xs font-bold text-slate-400 uppercase tracking-wider mr-2">Filter Type:</span>
-        {docTypes.map(t => (
-          <button
-            key={t}
-            onClick={() => setSelectedType(t)}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-              selectedType === t
-                ? 'bg-slate-900 text-white'
-                : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
-            }`}
-          >
+        {docTypes.map((t) => <button
+    key={t}
+    onClick={() => setSelectedType(t)}
+    className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${selectedType === t ? "bg-slate-900 text-white" : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-50"}`}
+  >
             {t}
-          </button>
-        ))}
+          </button>)}
       </div>
 
       <div className="legal-card overflow-hidden">
@@ -80,8 +60,7 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({ cases }) => {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100 text-xs">
-            {filteredDocs.map(doc => (
-              <tr key={doc.id} className="hover:bg-slate-50 transition-colors">
+            {filteredDocs.map((doc) => <tr key={doc.id} className="hover:bg-slate-50 transition-colors">
                 <td className="py-3.5 px-4 font-bold text-slate-900 flex items-center gap-2">
                   <FileText className="w-4 h-4 text-indigo-600 shrink-0" />
                   <span>{doc.name}</span>
@@ -104,11 +83,9 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({ cases }) => {
                     <Download className="w-3.5 h-3.5" /> Download
                   </button>
                 </td>
-              </tr>
-            ))}
+              </tr>)}
           </tbody>
         </table>
       </div>
-    </div>
-  );
+    </div>;
 };

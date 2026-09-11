@@ -1,17 +1,7 @@
-import React from 'react';
-import { Compass, ShieldCheck } from 'lucide-react';
-import type { Case } from '../../types/legal';
-
-import { NextActionCard } from '../common/NextActionCard';
-
-interface NextActionEngineViewProps {
-  cases: Case[];
-  onSelectCase: (caseId: string) => void;
-}
-
-export const NextActionEngineView: React.FC<NextActionEngineViewProps> = ({ cases, onSelectCase }) => {
-  return (
-    <div className="p-8 space-y-6 max-w-[1600px] mx-auto">
+import { Compass, ShieldCheck } from "lucide-react";
+import { NextActionCard } from "../common/NextActionCard";
+export const NextActionEngineView = ({ cases, onSelectCase }) => {
+  return <div className="p-8 space-y-6 max-w-[1600px] mx-auto">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
@@ -29,8 +19,7 @@ export const NextActionEngineView: React.FC<NextActionEngineViewProps> = ({ case
       </div>
 
       <div className="space-y-6">
-        {cases.map((c) => (
-          <div key={c.id} className="legal-card p-6 space-y-4">
+        {cases.map((c) => <div key={c.id} className="legal-card p-6 space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
               <div>
                 <span className="font-mono font-bold text-xs bg-indigo-50 text-indigo-700 px-2.5 py-0.5 rounded border border-indigo-200 mr-2">
@@ -40,17 +29,15 @@ export const NextActionEngineView: React.FC<NextActionEngineViewProps> = ({ case
                 <h3 className="text-lg font-extrabold text-slate-900 mt-1">{c.title}</h3>
               </div>
               <button
-                onClick={() => onSelectCase(c.id)}
-                className="px-3.5 py-1.5 text-xs font-bold bg-slate-900 text-white rounded-lg hover:bg-slate-800 self-start sm:self-auto"
-              >
+    onClick={() => onSelectCase(c.id)}
+    className="px-3.5 py-1.5 text-xs font-bold bg-slate-900 text-white rounded-lg hover:bg-slate-800 self-start sm:self-auto"
+  >
                 Inspect Case Flow →
               </button>
             </div>
 
             <NextActionCard nextAction={c.nextAction} onExecuteAction={() => onSelectCase(c.id)} />
-          </div>
-        ))}
+          </div>)}
       </div>
-    </div>
-  );
+    </div>;
 };

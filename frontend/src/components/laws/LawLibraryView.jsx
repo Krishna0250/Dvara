@@ -1,36 +1,22 @@
-import React, { useState } from 'react';
-import { BookOpen, Search, ShieldCheck, ArrowRight, Plus } from 'lucide-react';
-import type { LawProvision } from '../../types/legal';
-import { LAW_PROVISIONS } from '../../data/mockData';
-
-interface LawLibraryViewProps {
-  onRegisterCaseFromProvision: (provision: LawProvision) => void;
-}
-
-export const LawLibraryView: React.FC<LawLibraryViewProps> = ({ onRegisterCaseFromProvision }) => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedLawType, setSelectedLawType] = useState<string>('All');
-  const [selectedVersion, setSelectedVersion] = useState<string>('All');
-
-  const lawTypes = ['All', 'Constitution', 'Central Act', 'Procedural Code', 'Special Statute'];
-  const statuteVersions = ['All', 'BNS 2023 (Current)', 'IPC 1860 (Legacy)', 'Active Statute'];
-
-  const filteredProvisions = LAW_PROVISIONS.filter(p => {
-    const matchesSearch = 
-      p.lawName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      p.sectionNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      p.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      p.description.toLowerCase().includes(searchTerm.toLowerCase());
-
-    const matchesType = selectedLawType === 'All' || p.lawType === selectedLawType;
-    const matchesVersion = selectedVersion === 'All' || p.statuteVersion === selectedVersion;
-
+import { useState } from "react";
+import { BookOpen, Search, ShieldCheck, ArrowRight, Plus } from "lucide-react";
+import { LAW_PROVISIONS } from "../../data/mockData";
+export const LawLibraryView = ({ onRegisterCaseFromProvision }) => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedLawType, setSelectedLawType] = useState("All");
+  const [selectedVersion, setSelectedVersion] = useState("All");
+  const lawTypes = ["All", "Constitution", "Central Act", "Procedural Code", "Special Statute"];
+  const statuteVersions = ["All", "BNS 2023 (Current)", "IPC 1860 (Legacy)", "Active Statute"];
+  const filteredProvisions = LAW_PROVISIONS.filter((p) => {
+    const matchesSearch = p.lawName.toLowerCase().includes(searchTerm.toLowerCase()) || p.sectionNumber.toLowerCase().includes(searchTerm.toLowerCase()) || p.title.toLowerCase().includes(searchTerm.toLowerCase()) || p.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesType = selectedLawType === "All" || p.lawType === selectedLawType;
+    const matchesVersion = selectedVersion === "All" || p.statuteVersion === selectedVersion;
     return matchesSearch && matchesType && matchesVersion;
   });
-
-  return (
-    <div className="p-8 space-y-6 max-w-[1600px] mx-auto">
-      {/* Header */}
+  return <div className="p-8 space-y-6 max-w-[1600px] mx-auto">
+      {
+    /* Header */
+  }
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
@@ -54,7 +40,9 @@ export const LawLibraryView: React.FC<LawLibraryViewProps> = ({ onRegisterCaseFr
         </div>
       </div>
 
-      {/* Concept Architecture Flow Banner */}
+      {
+    /* Concept Architecture Flow Banner */
+  }
       <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white p-4 rounded-xl shadow-md border border-indigo-900/60">
         <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-semibold">
           <span className="text-slate-400 font-bold uppercase tracking-wider">Concept Pipeline:</span>
@@ -70,73 +58,62 @@ export const LawLibraryView: React.FC<LawLibraryViewProps> = ({ onRegisterCaseFr
         </div>
       </div>
 
-      {/* Search & Filter Row */}
+      {
+    /* Search & Filter Row */
+  }
       <div className="flex flex-col md:flex-row items-center justify-between gap-4 bg-white p-4 rounded-xl border border-slate-200 shadow-2xs">
         <div className="relative w-full md:w-96">
           <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
           <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search Law (e.g., BNS, 138, Murder, Article 226, Contract)..."
-            className="w-full pl-9 pr-4 py-2 text-xs border border-slate-200 rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium"
-          />
+    type="text"
+    value={searchTerm}
+    onChange={(e) => setSearchTerm(e.target.value)}
+    placeholder="Search Law (e.g., BNS, 138, Murder, Article 226, Contract)..."
+    className="w-full pl-9 pr-4 py-2 text-xs border border-slate-200 rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium"
+  />
         </div>
 
         <div className="flex flex-wrap items-center gap-4 w-full md:w-auto">
           <div className="flex items-center gap-2">
             <span className="text-xs text-slate-500 font-bold uppercase tracking-wider">Law Type:</span>
-            {lawTypes.map((t) => (
-              <button
-                key={t}
-                onClick={() => setSelectedLawType(t)}
-                className={`px-3 py-1 text-xs font-semibold rounded-lg transition-all ${
-                  selectedLawType === t
-                    ? 'bg-slate-900 text-white'
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                }`}
-              >
+            {lawTypes.map((t) => <button
+    key={t}
+    onClick={() => setSelectedLawType(t)}
+    className={`px-3 py-1 text-xs font-semibold rounded-lg transition-all ${selectedLawType === t ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
+  >
                 {t}
-              </button>
-            ))}
+              </button>)}
           </div>
 
           <div className="flex items-center gap-2">
             <span className="text-xs text-slate-500 font-bold uppercase tracking-wider">Version:</span>
-            {statuteVersions.map((v) => (
-              <button
-                key={v}
-                onClick={() => setSelectedVersion(v)}
-                className={`px-3 py-1 text-xs font-semibold rounded-lg transition-all ${
-                  selectedVersion === v
-                    ? 'bg-indigo-600 text-white font-bold'
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                }`}
-              >
+            {statuteVersions.map((v) => <button
+    key={v}
+    onClick={() => setSelectedVersion(v)}
+    className={`px-3 py-1 text-xs font-semibold rounded-lg transition-all ${selectedVersion === v ? "bg-indigo-600 text-white font-bold" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
+  >
                 {v}
-              </button>
-            ))}
+              </button>)}
           </div>
         </div>
       </div>
 
-      {/* Provision Cards Grid */}
+      {
+    /* Provision Cards Grid */
+  }
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {filteredProvisions.map((p) => {
-          const isCurrentBNS = p.statuteVersion.includes('Current');
-          return (
-            <div 
-              key={p.id} 
-              className="legal-card p-5 space-y-4 hover:border-indigo-300 transition-all flex flex-col justify-between"
-            >
+    const isCurrentBNS = p.statuteVersion.includes("Current");
+    return <div
+      key={p.id}
+      className="legal-card p-5 space-y-4 hover:border-indigo-300 transition-all flex flex-col justify-between"
+    >
               <div className="space-y-2">
                 <div className="flex items-center justify-between gap-2">
                   <span className="font-mono font-bold text-xs bg-indigo-50 text-indigo-700 px-2.5 py-0.5 rounded border border-indigo-200">
                     {p.sectionNumber}
                   </span>
-                  <span className={`text-[10px] font-extrabold px-2.5 py-0.5 rounded-full ${
-                    isCurrentBNS ? 'bg-teal-100 text-teal-800 border border-teal-200' : 'bg-slate-100 text-slate-700 border border-slate-200'
-                  }`}>
+                  <span className={`text-[10px] font-extrabold px-2.5 py-0.5 rounded-full ${isCurrentBNS ? "bg-teal-100 text-teal-800 border border-teal-200" : "bg-slate-100 text-slate-700 border border-slate-200"}`}>
                     {p.statuteVersion}
                   </span>
                 </div>
@@ -163,15 +140,13 @@ export const LawLibraryView: React.FC<LawLibraryViewProps> = ({ onRegisterCaseFr
               </div>
 
               <button
-                onClick={() => onRegisterCaseFromProvision(p)}
-                className="mt-2 w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-lg transition-all flex items-center justify-center gap-1.5 shadow-sm active:scale-98"
-              >
+      onClick={() => onRegisterCaseFromProvision(p)}
+      className="mt-2 w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-lg transition-all flex items-center justify-center gap-1.5 shadow-sm active:scale-98"
+    >
                 <Plus className="w-4 h-4" /> Register Case Under {p.sectionNumber}
               </button>
-            </div>
-          );
-        })}
+            </div>;
+  })}
       </div>
-    </div>
-  );
+    </div>;
 };
