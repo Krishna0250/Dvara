@@ -1,18 +1,74 @@
-# Dvara — Distributed Judicial Workflow & Case Management Platform
+<div align="center">
 
-[![Java](https://img.shields.io/badge/Java-17%2B-ED8B00?logo=openjdk&logoColor=white)](https://openjdk.org/)
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2.3-6DB33F?logo=springboot&logoColor=white)](https://spring.io/projects/spring-boot)
-[![Spring Security](https://img.shields.io/badge/Spring%20Security-JWT%20RBAC-green?logo=springsecurity&logoColor=white)](https://spring.io/projects/spring-security)
-[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)](https://react.dev/)
-[![JavaScript](https://img.shields.io/badge/JavaScript-ES6%2B%20%2F%20JSX-F7DF1E?logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-4.0-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
-[![Database](https://img.shields.io/badge/Database-MySQL%20%2F%20H2-4479A1?logo=mysql&logoColor=white)](https://www.mysql.com/)
+  # ⚖️ DVARA (द्वार)
+  ### Distributed Judicial Workflow & Case Intelligence Platform
 
-**Dvara** is a distributed, enterprise-grade judicial case management and procedural litigation platform. Designed around Indian procedural law (**Code of Civil Procedure (CPC)**, **Bharatiya Nagarik Suraksha Sanhita (BNSS)**, and the **Negotiable Instruments Act (Sec 138)**), Dvara eliminates procedural bottlenecks through a state-machine driven procedural workflow engine, digital document scrutiny with deficiency loops, role-based access control (RBAC), and tamper-evident audit logging.
+  <p align="center">
+    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=700&size=24&pause=1200&color=6366F1&center=true&vCenter=true&width=650&lines=Dvara+%E2%80%94+Digital+Gateway+to+Justice;State-Machine+Litigation+Workflow+Engine;Spring+Boot+3+Microservices+%2B+React+19;Statutory+Procedural+Intelligence+(CPC+%2B+BNSS);Tamper-Evident+Audit+Trail+%2B+JWT+RBAC" alt="Dvara Animated Banner" />
+  </p>
+
+  <p align="center">
+    <a href="https://skillicons.dev">
+      <img src="https://skillicons.dev/icons?i=java,spring,react,js,mysql,tailwind,docker,vite,git,github,postman" />
+    </a>
+  </p>
+
+  <p align="center">
+    <img src="https://img.shields.io/badge/Java-17%2B-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white" />
+    <img src="https://img.shields.io/badge/Spring%20Boot-3.2.3-6DB33F?style=for-the-badge&logo=springboot&logoColor=white" />
+    <img src="https://img.shields.io/badge/Spring%20Security-JWT%20RBAC-007ACC?style=for-the-badge&logo=springsecurity&logoColor=white" />
+    <img src="https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black" />
+    <img src="https://img.shields.io/badge/JavaScript-ES6%2B%20%2F%20JSX-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" />
+    <img src="https://img.shields.io/badge/Tailwind%20CSS-4.0-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" />
+    <img src="https://img.shields.io/badge/MySQL-8.0%20%2F%20H2-4479A1?style=for-the-badge&logo=mysql&logoColor=white" />
+  </p>
+
+  <p align="center">
+    <strong>Dvara</strong> (Sanskrit for <em>Gateway / Threshold</em>) is an enterprise-grade judicial litigation platform modeling Indian civil & criminal procedural statutory law (<strong>CPC Order VIII</strong>, <strong>BNSS Sec 103</strong>, and <strong>Negotiable Instruments Act Sec 138</strong>).
+  </p>
+
+</div>
 
 ---
 
-## 🏛️ High-Level System Architecture
+## 🌟 Key Features at a Glance
+
+<table>
+  <tr>
+    <td width="50%">
+      <h3>🔍 Digital Scrutiny & Deficiency Loop</h3>
+      <p>Prevents invalid docketing. Scrutiny Officers inspect petition exhibits and raise structured statutory deficiencies that lock petition progress until advocates submit certified resolutions.</p>
+    </td>
+    <td width="50%">
+      <h3>🏛️ Registration & Case Number Engine</h3>
+      <p>Registrars audit verified petitions, allocate judicial courtrooms, and generate official unique case numbers (e.g. <code>CIV/2026/1024</code> or <code>CR/2026/001</code>).</p>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%">
+      <h3>⚡ Inter-Service Automated Docketing</h3>
+      <p>Registration triggers asynchronous REST dispatch to the Hearing Service, automatically scheduling initial admission hearings and calculating statutory 30-day filing deadlines.</p>
+    </td>
+    <td width="50%">
+      <h3>⚖️ Judicial Orders & Proceedings</h3>
+      <p>Bench interface allowing judges to convene hearings, record attendance, and draft signed Interlocutory, Injunction, or Final Verdict orders.</p>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%">
+      <h3>🛡️ HMAC-SHA256 JWT & Strict RBAC</h3>
+      <p>Stateless token authentication enforcing persona permissions across 5 distinct roles: <em>Judge, Registrar, Scrutiny Officer, Advocate, and Citizen</em>.</p>
+    </td>
+    <td width="50%">
+      <h3>📜 Tamper-Evident Case Audit Trail</h3>
+      <p>Permanent historical ledger tracking every stage transition, deficiency action, order issuance, and registration with actor timestamps.</p>
+    </td>
+  </tr>
+</table>
+
+---
+
+## 🏛️ Distributed System Topology
 
 ```
                                   ┌────────────────────────┐
@@ -52,7 +108,7 @@
 
 ---
 
-## 🔄 End-to-End Procedural Lifecycle
+## 🔄 End-to-End Procedural Flow
 
 ```
 [Citizen / Advocate]
@@ -102,7 +158,10 @@
 
 ---
 
-## 📡 Microservices & API Overview
+## 📡 Microservices & REST API Reference
+
+<details>
+<summary><strong>🔍 Click to expand API endpoints documentation</strong></summary>
 
 ### 1. Case Service (`http://localhost:8081`)
 | Method | Endpoint | Description | Auth Required |
@@ -137,11 +196,13 @@
 | `GET` | `/api/v1/documents?caseId={id}` | Retrieve uploaded petition exhibits & orders |
 | `POST` | `/api/v1/documents` | Upload and verify electronic filings |
 
+</details>
+
 ---
 
 ## 🧪 Automated Testing Suite
 
-Dvara includes a **JUnit 5 & Mockito test suite** validating critical business invariants:
+LexFlow includes a **JUnit 5 & Mockito test suite** validating critical business invariants:
 
 ```bash
 # Run unit tests in case-service
@@ -164,21 +225,16 @@ mvn test
 
 ## 🚀 Quickstart & Local Setup
 
-### Prerequisites
-- **Node.js** 18+ & **npm**
-- **Java** 17+ (OpenJDK or Oracle JDK)
-- **Maven** 3.8+ (Optional if using IDE or wrappers)
-
 ### 1. Start the React Frontend
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
-The application will open at **`http://localhost:5173/`**.
+Open **`http://localhost:5173/`** in your browser.
 
 ### 2. Start the Backend Microservices
-All microservices come pre-configured with **H2 in-memory databases** by default (with automatic seed data), so no external MySQL installation is strictly required to test:
+All microservices come pre-configured with **H2 in-memory databases** by default (with automatic seed data), so no external MySQL setup is required to run:
 
 ```bash
 # Terminal 1: Case Service (Port 8081)
@@ -204,7 +260,7 @@ mvn spring-boot:run
 
 ## 🎭 Demo Personas for Reviewers & Interviewers
 
-You can switch personas at any time using the **Role Switcher** in the top-right header:
+Switch personas at any time using the **Role Switcher** in the top-right header:
 
 | Persona | Name | Credentials | Key Action to Demonstrate |
 | :--- | :--- | :--- | :--- |
@@ -216,5 +272,6 @@ You can switch personas at any time using the **Role Switcher** in the top-right
 
 ---
 
-## 📄 License
-This project is licensed under the MIT License — designed for engineering portfolios and distributed systems demonstrations.
+<div align="center">
+  <sub>Built with ❤️ by <a href="https://github.com/Krishna0250">Krishna0250</a>. Licensed under the MIT License.</sub>
+</div>
