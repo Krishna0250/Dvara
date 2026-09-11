@@ -1,69 +1,64 @@
 package com.lexflow.hearingservice.controller;
 
+import com.lexflow.hearingservice.entity.DeadlineEntity;
+import com.lexflow.hearingservice.entity.HearingEntity;
+import com.lexflow.hearingservice.entity.OrderEntity;
+import com.lexflow.hearingservice.service.HearingService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1")
 @CrossOrigin(origins = "*")
 public class HearingController {
 
+    private final HearingService hearingService;
+
+    @Autowired
+    public HearingController(HearingService hearingService) {
+        this.hearingService = hearingService;
+        this.hearingService.seedInitialData();
+    }
+
     @GetMapping("/hearings")
-    public ResponseEntity<List<Map<String, Object>>> getHearings() {
-        List<Map<String, Object>> list = new ArrayList<>();
-        
-        Map<String, Object> h1 = new HashMap<>();
-        h1.put("id", "h1");
-        h1.put("caseNumber", "CR-2026-001");
-        h1.put("caseTitle", "State vs Rahul Sharma");
-        h1.put("date", "2026-09-15");
-        h1.put("time", "10:30 AM");
-        h1.put("court", "Courtroom 4, Sessions Court");
-        h1.put("purpose", "Prosecution Witness Examination (PW-1 & PW-2)");
-        h1.put("status", "Scheduled");
-        list.add(h1);
+    public ResponseEntity<List<HearingEntity>> getHearings() {
+        return ResponseEntity.ok(hearingService.getAllHearings());
+    }
 
-        Map<String, Object> h2 = new HashMap<>();
-        h2.put("id", "h2");
-        h2.put("caseNumber", "NI-2026-014");
-        h2.put("caseTitle", "Apex Traders vs Rohan Kumar");
-        h2.put("date", "2026-09-18");
-        h2.put("time", "11:15 AM");
-        h2.put("court", "MM Court Room 2");
-        h2.put("purpose", "Complaint Admission & Verification Oath");
-        h2.put("status", "Scheduled");
-        list.add(h2);
-
-        return ResponseEntity.ok(list);
+    @PostMapping("/hearings")
+    public ResponseEntity<HearingEntity> scheduleHearing(@RequestBody HearingEntity hearing) {
+        HearingEntity created = hearingService.scheduleHearing(hearing);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @GetMapping("/deadlines")
-    public ResponseEntity<List<Map<String, Object>>> getDeadlines() {
-        List<Map<String, Object>> list = new ArrayList<>();
-        
-        Map<String, Object> d1 = new HashMap<>();
-        d1.put("id", "d1");
-        d1.put("caseNumber", "NI-2026-014");
-        d1.put("caseTitle", "Apex Traders vs Rohan Kumar");
-        d1.put("dueDate", "2026-09-08");
-        d1.put("daysRemaining", 0);
-        d1.put("type", "Payment Period");
-        d1.put("status", "Overdue");
-        d1.put("suggestedAction", "Statutory 15-day notice payment period expired. Immediately draft and file formal criminal complaint under Sec 138 NI Act.");
-        list.add(d1);
+    public ResponseEntity<List<DeadlineEntity>> getDeadlines() {
+        return ResponseEntity.ok(hearingService.getAllDeadlines());
+    }
 
-        Map<String, Object> d2 = new HashMap<>();
-        d2.put("id", "d2");
-        d2.put("caseNumber", "CR-2026-001");
-        d2.put("caseTitle", "State vs Rahul Sharma");
-        d2.put("dueDate", "2026-09-12");
-        d2.put("daysRemaining", 4);
-        d2.put("type", "Document Submission");
-        d2.put("status", "Due Soon");
-        d2.put("suggestedAction", "Submit list of defense witnesses and expert medical opinion affidavit before prosecution examination.");
-        list.add(d2);
+    @PostMapping("/deadlines")
+    public ResponseEntity<DeadlineEntity> createDeadline(@RequestBody DeadlineEntity deadline) {
+        DeadlineEntity created = hearingService.createDeadline(deadline);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    }
 
-        return ResponseEntity.ok(list);
+    // Orders API Endpoints
+    @GetMapping("/orders")
+    public ResponseEntity<List<OrderEntity>> getOrders(
+            @RequestParam(required = false) String caseId) {
+        if (caseId != null && !caseId.isBlank()) {
+            return ResponseEntity.ok(hearingService.getOrdersByCaseId(caseId));
+        }
+        return ResponseEntity.ok(hearingService.getAllOrders());
+    }
+
+    @PostMapping("/orders")
+    public ResponseEntity<OrderEntity> createOrder(@RequestBody OrderEntity order) {
+        OrderEntity created = hearingService.createOrder(order);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 }

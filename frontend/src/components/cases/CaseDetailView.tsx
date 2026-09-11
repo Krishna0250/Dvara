@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   ArrowLeft, 
   Calendar, 
@@ -10,29 +10,73 @@ import {
   Building2, 
   CheckCircle2, 
   FileCheck,
-  Upload
+  Upload,
+  Scale, 
+  ShieldCheck, 
+  AlertTriangle 
 } from 'lucide-react';
-import type { Case } from '../../types/legal';
+import type { Case, UserRole, JudicialOrder, AuditLog } from '../../types/legal';
 
 import { NextActionCard } from '../common/NextActionCard';
 import { WorkflowVisualizer } from '../workflow/WorkflowVisualizer';
+import { api } from '../../api/apiClient';
 
 interface CaseDetailViewProps {
   caseData: Case;
+  currentRole: UserRole;
   onBack: () => void;
   onAddEvent: (caseId: string, newEvent: any) => void;
 }
 
 export const CaseDetailView: React.FC<CaseDetailViewProps> = ({
   caseData,
+  currentRole,
   onBack,
   onAddEvent
 }) => {
-  const [activeTab, setActiveTab] = useState<'overview' | 'timeline' | 'workflow' | 'documents' | 'hearings' | 'parties'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'timeline' | 'workflow' | 'documents' | 'hearings' | 'parties' | 'orders' | 'audit'>('overview');
   const [showAddEventModal, setShowAddEventModal] = useState(false);
   const [newEventTitle, setNewEventTitle] = useState('');
   const [newEventCategory, setNewEventCategory] = useState('Court');
   const [newEventDesc, setNewEventDesc] = useState('');
+
+  // Orders State
+  const [orders, setOrders] = useState<JudicialOrder[]>([]);
+  const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
+  const [showOrderModal, setShowOrderModal] = useState(false);
+  const [orderTitle, setOrderTitle] = useState('');
+  const [orderType, setOrderType] = useState<'INTERIM' | 'PROCEDURAL' | 'FINAL' | 'ADMINISTRATIVE'>('PROCEDURAL');
+  const [orderContent, setOrderContent] = useState('');
+
+  useEffect(() => {
+    loadOrdersAndAudit();
+  }, [caseData.id]);
+
+  const loadOrdersAndAudit = async () => {
+    const o = await api.getOrders(caseData.id);
+    setOrders(o);
+    const a = await api.getAuditLogs(caseData.id);
+    setAuditLogs(a);
+  };
+
+  const handleIssueOrder = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!orderTitle || !orderContent) return;
+
+    await api.createOrder({
+      caseId: caseData.id,
+      orderType,
+      title: orderTitle,
+      content: orderContent,
+      issuedByJudge: currentRole === 'JUDGE' ? "Hon'ble Justice A. K. Sikri" : 'Judicial Officer',
+      issuedDate: new Date().toISOString().split('T')[0]
+    });
+
+    setOrderTitle('');
+    setOrderContent('');
+    setShowOrderModal(false);
+    loadOrdersAndAudit();
+  };
 
   const badgeClass = caseData.priority === 'High' ? 'badge-high' : caseData.priority === 'Medium' ? 'badge-medium' : 'badge-low';
 
@@ -122,6 +166,8 @@ export const CaseDetailView: React.FC<CaseDetailViewProps> = ({
           { id: 'overview', label: 'Overview', icon: FileText },
           { id: 'timeline', label: `Timeline (${caseData.timeline.length})`, icon: GitCommit },
           { id: 'workflow', label: 'Workflow View', icon: Layers },
+          { id: 'orders', label: `Orders (${orders.length})`, icon: Scale },
+          { id: 'audit', label: `Audit Log (${auditLogs.length})`, icon: ShieldCheck },
           { id: 'documents', label: `Documents (${caseData.documents.length})`, icon: FileCheck },
           { id: 'hearings', label: `Hearings (${caseData.hearings.length})`, icon: Calendar },
           { id: 'parties', label: `Parties (${caseData.parties.length})`, icon: Users },
@@ -353,18 +399,166 @@ export const CaseDetailView: React.FC<CaseDetailViewProps> = ({
         </div>
       )}
 
-      {/* Parties Tab */}
-      {activeTab === 'parties' && (
+      {/* Judicial Orders Tab */}
+      {activeTab === 'orders' && (
         <div className="legal-card p-6 space-y-4">
-          <h2 className="text-lg font-bold text-slate-900 border-b border-slate-100 pb-3">Litigating Parties & Contacts</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {caseData.parties.map(p => (
-              <div key={p.id} className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
-                <span className="text-xs font-bold text-indigo-600 uppercase tracking-wider">{p.role}</span>
-                <p className="font-extrabold text-slate-900 text-base">{p.name}</p>
-                <p className="text-xs text-slate-500 font-mono">Contact: {p.contact}</p>
+          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div>
+              <h2 className="text-lg font-bold text-slate-900">Judicial Orders & Directions ({orders.length})</h2>
+              <p className="text-xs text-slate-500">Formal court orders, interim directions, and procedural rulings</p>
+            </div>
+            {(currentRole === 'JUDGE' || currentRole === 'REGISTRAR' || currentRole === 'ADMIN') && (
+              <button
+                onClick={() => setShowOrderModal(true)}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded text-xs font-bold transition-all shadow-xs"
+              >
+                <Scale className="w-3.5 h-3.5" />
+                <span>Issue Formal Order</span>
+              </button>
+            )}
+          </div>
+
+          {orders.length === 0 ? (
+            <div className="p-8 text-center bg-slate-50 rounded-xl border border-dashed text-xs text-slate-500">
+              No formal judicial orders issued yet for this case.
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {orders.map((ord) => (
+                <div key={ord.id} className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-slate-900 text-sm">{ord.title}</span>
+                      <span className="text-[10px] font-bold bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded">
+                        {ord.orderType}
+                      </span>
+                    </div>
+                    <span className="text-xs font-mono font-semibold text-slate-500">{ord.issuedDate}</span>
+                  </div>
+                  <p className="text-xs text-slate-700 leading-relaxed font-serif italic bg-white p-3 rounded-lg border border-slate-200">
+                    "{ord.content}"
+                  </p>
+                  <p className="text-[11px] text-slate-500 flex items-center justify-between">
+                    <span>Issued By: <strong className="text-slate-800">{ord.issuedByJudge}</strong></span>
+                    {ord.documentUrl && (
+                      <a href="#" className="text-indigo-600 font-bold hover:underline">Download Signed Order PDF</a>
+                    )}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Audit Log Tab */}
+      {activeTab === 'audit' && (
+        <div className="legal-card p-6 space-y-4">
+          <div className="border-b border-slate-100 pb-3">
+            <h2 className="text-lg font-bold text-slate-900">Immutable Case Audit Log ({auditLogs.length})</h2>
+            <p className="text-xs text-slate-500">System-wide tamper-evident record of state transitions, scrutiny approvals & user actions</p>
+          </div>
+
+          {auditLogs.length === 0 ? (
+            <div className="p-8 text-center bg-slate-50 rounded-xl border border-dashed text-xs text-slate-500">
+              No backend audit logs recorded yet.
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {auditLogs.map((log) => (
+                <div key={log.id} className="p-3 bg-slate-50 rounded-lg border border-slate-200 flex items-start justify-between text-xs">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-indigo-700">{log.action}</span>
+                      <span className="text-[10px] font-bold bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded">
+                        {log.role}
+                      </span>
+                      {log.previousState && log.newState && (
+                        <span className="text-[10px] text-slate-500 font-mono">
+                          ({log.previousState} → {log.newState})
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-slate-700">{log.details}</p>
+                    <p className="text-[10px] text-slate-400">Actor: {log.actor}</p>
+                  </div>
+                  <span className="text-[11px] font-mono text-slate-400">
+                    {new Date(log.timestamp).toLocaleString()}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Modal: Issue Judicial Order */}
+      {showOrderModal && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-lg space-y-4 border border-slate-200 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div className="flex items-center gap-2">
+                <Scale className="w-5 h-5 text-indigo-600" />
+                <h3 className="text-base font-bold text-slate-900">Draft & Issue Formal Judicial Order</h3>
               </div>
-            ))}
+              <button onClick={() => setShowOrderModal(false)} className="text-slate-400 hover:text-slate-600 font-bold">✕</button>
+            </div>
+
+            <form onSubmit={handleIssueOrder} className="space-y-3">
+              <div>
+                <label className="text-xs font-bold text-slate-700 block mb-1">Order Title / Heading</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Order on Summons & Interim Relief Application"
+                  value={orderTitle}
+                  onChange={(e) => setOrderTitle(e.target.value)}
+                  className="w-full text-xs p-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-bold text-slate-700 block mb-1">Order Type</label>
+                <select
+                  value={orderType}
+                  onChange={(e) => setOrderType(e.target.value as any)}
+                  className="w-full text-xs p-2.5 border border-slate-200 rounded-lg"
+                >
+                  <option value="PROCEDURAL">PROCEDURAL (Interlocutory / Summons)</option>
+                  <option value="INTERIM">INTERIM (Injunction / Stay / Bail)</option>
+                  <option value="FINAL">FINAL (Judgment / Decree)</option>
+                  <option value="ADMINISTRATIVE">ADMINISTRATIVE (Bench Transfer / Notice)</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="text-xs font-bold text-slate-700 block mb-1">Order Content & Judicial Directions</label>
+                <textarea
+                  required
+                  rows={4}
+                  placeholder="Enter the official text and directions issued by the Court..."
+                  value={orderContent}
+                  onChange={(e) => setOrderContent(e.target.value)}
+                  className="w-full text-xs p-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+
+              <div className="flex justify-end gap-2 pt-2 border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => setShowOrderModal(false)}
+                  className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-lg"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 text-xs font-semibold bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 shadow-xs"
+                >
+                  Sign & Issue Order
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

@@ -1,38 +1,39 @@
 package com.lexflow.documentservice.controller;
 
+import com.lexflow.documentservice.entity.DocumentEntity;
+import com.lexflow.documentservice.service.DocumentService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/documents")
 @CrossOrigin(origins = "*")
 public class DocumentController {
 
+    private final DocumentService documentService;
+
+    @Autowired
+    public DocumentController(DocumentService documentService) {
+        this.documentService = documentService;
+        this.documentService.seedInitialData();
+    }
+
     @GetMapping
-    public ResponseEntity<List<Map<String, Object>>> getDocuments() {
-        List<Map<String, Object>> docs = new ArrayList<>();
+    public ResponseEntity<List<DocumentEntity>> getDocuments(
+            @RequestParam(required = false) String caseId) {
+        if (caseId != null && !caseId.isBlank()) {
+            return ResponseEntity.ok(documentService.getDocumentsByCaseId(caseId));
+        }
+        return ResponseEntity.ok(documentService.getAllDocuments());
+    }
 
-        Map<String, Object> d1 = new HashMap<>();
-        d1.put("id", "doc-fir-01");
-        d1.put("name", "FIR Copy (No. 204/2026)");
-        d1.put("type", "FIR");
-        d1.put("caseId", "CR-2026-001");
-        d1.put("uploadedDate", "2026-08-08");
-        d1.put("uploadedBy", "Police Station Clerk");
-        d1.put("status", "Uploaded");
-        docs.add(d1);
-
-        Map<String, Object> d2 = new HashMap<>();
-        d2.put("id", "doc-not-138");
-        d2.put("name", "Statutory Legal Demand Notice");
-        d2.put("type", "Notice");
-        d2.put("caseId", "NI-2026-014");
-        d2.put("uploadedDate", "2026-08-20");
-        d2.put("uploadedBy", "Adv. Sunita Rao");
-        d2.put("status", "Uploaded");
-        docs.add(d2);
-
-        return ResponseEntity.ok(docs);
+    @PostMapping
+    public ResponseEntity<DocumentEntity> uploadDocument(@RequestBody DocumentEntity doc) {
+        DocumentEntity created = documentService.uploadDocument(doc);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 }

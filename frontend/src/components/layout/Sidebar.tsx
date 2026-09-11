@@ -9,7 +9,8 @@ import {
   Compass, 
   Settings,
   Scale,
-  BookOpen
+  BookOpen,
+  ShieldAlert
 } from 'lucide-react';
 
 
@@ -21,6 +22,7 @@ interface SidebarProps {
 export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { id: 'scrutiny', label: 'Scrutiny & Registration', icon: ShieldAlert },
     { id: 'laws', label: 'Law & Provision Library', icon: BookOpen },
     { id: 'cases', label: 'Cases', icon: Briefcase },
     { id: 'hearings', label: 'Hearings', icon: Calendar },

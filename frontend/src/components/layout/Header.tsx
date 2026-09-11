@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
 import { Search, Bell, Plus, PlayCircle, ShieldCheck, ChevronDown } from 'lucide-react';
-import type { Case } from '../../types/legal';
-
+import type { Case, UserRole } from '../../types/legal';
 
 interface HeaderProps {
   onOpenCreateCase: () => void;
   onSelectCase: (caseId: string) => void;
   cases: Case[];
+  currentRole: UserRole;
+  onRoleChange: (role: UserRole) => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ onOpenCreateCase, onSelectCase, cases }) => {
+export const Header: React.FC<HeaderProps> = ({ onOpenCreateCase, onSelectCase, cases, currentRole, onRoleChange }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [showDemoMenu, setShowDemoMenu] = useState(false);
+  const [showRoleMenu, setShowRoleMenu] = useState(false);
 
   const filteredCases = cases.filter(c => 
     c.caseNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -105,10 +107,52 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCreateCase, onSelectCase, 
           <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white"></span>
         </button>
 
-        {/* System Status Indicator */}
-        <div className="hidden lg:flex items-center gap-1.5 text-xs text-teal-700 bg-teal-50 px-2.5 py-1 rounded-md border border-teal-200 font-medium">
-          <ShieldCheck className="w-3.5 h-3.5 text-teal-600" />
-          <span>Workflow Rules Engine Active</span>
+        {/* Role Switcher */}
+        <div className="relative">
+          <button
+            onClick={() => setShowRoleMenu(!showRoleMenu)}
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-indigo-200 bg-indigo-50/70 text-indigo-950 text-xs font-semibold hover:bg-indigo-100 transition-all shadow-2xs"
+          >
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>Role: <strong className="text-indigo-700">{currentRole}</strong></span>
+            <ChevronDown className="w-3.5 h-3.5 text-indigo-600" />
+          </button>
+
+          {showRoleMenu && (
+            <div className="absolute right-0 top-10 w-64 bg-white border border-slate-200 rounded-xl shadow-xl p-2 z-30 space-y-1">
+              <div className="px-2 py-1 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                Switch Active Persona / RBAC
+              </div>
+              {[
+                { role: 'JUDGE' as UserRole, name: "Hon'ble Justice Sikri", badge: 'Judge / Bench' },
+                { role: 'REGISTRAR' as UserRole, name: 'Registrar Deshmukh', badge: 'Court Admin' },
+                { role: 'SCRUTINY_OFFICER' as UserRole, name: 'Officer Priya Nair', badge: 'Filing Audit' },
+                { role: 'ADVOCATE' as UserRole, name: 'Adv. Rajesh Verma', badge: 'Legal Counsel' },
+                { role: 'CITIZEN' as UserRole, name: 'Rohan Kumar', badge: 'Litigant' },
+              ].map((r) => (
+                <button
+                  key={r.role}
+                  onClick={() => {
+                    onRoleChange(r.role);
+                    setShowRoleMenu(false);
+                  }}
+                  className={`w-full text-left p-2 rounded-lg transition-colors flex items-center justify-between group ${
+                    currentRole === r.role ? 'bg-indigo-600 text-white' : 'hover:bg-slate-100 text-slate-900'
+                  }`}
+                >
+                  <div>
+                    <div className="text-xs font-bold">{r.name}</div>
+                    <div className={`text-[10px] ${currentRole === r.role ? 'text-indigo-100' : 'text-slate-500'}`}>{r.badge}</div>
+                  </div>
+                  <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
+                    currentRole === r.role ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-700'
+                  }`}>
+                    {r.role}
+                  </span>
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* New Case CTA */}

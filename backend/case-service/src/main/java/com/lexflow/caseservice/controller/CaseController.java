@@ -1,66 +1,127 @@
 package com.lexflow.caseservice.controller;
 
+import com.lexflow.caseservice.entity.*;
+import com.lexflow.caseservice.service.CaseService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.*;
 
+import com.lexflow.caseservice.security.JwtUtils;
+
 @RestController
-@RequestMapping("/api/v1/cases")
+@RequestMapping("/api/v1")
 @CrossOrigin(origins = "*")
 public class CaseController {
 
-    @GetMapping
-    public ResponseEntity<List<Map<String, Object>>> getAllCases(
-            @RequestParam(required = false) String category,
-            @RequestParam(required = false) String status) {
-        List<Map<String, Object>> cases = new ArrayList<>();
-        
-        Map<String, Object> c1 = new HashMap<>();
-        c1.put("id", "case-cr-001");
-        c1.put("caseNumber", "CR-2026-001");
-        c1.put("title", "State vs Rahul Sharma");
-        c1.put("category", "Criminal");
-        c1.put("caseType", "Murder");
-        c1.put("currentStage", "Evidence Stage");
-        c1.put("priority", "High");
-        c1.put("status", "Active");
-        c1.put("assignedLawyer", "Adv. Rajesh Verma");
-        cases.add(c1);
+    private final CaseService caseService;
+    private final JwtUtils jwtUtils;
 
-        Map<String, Object> c2 = new HashMap<>();
-        c2.put("id", "case-ni-014");
-        c2.put("caseNumber", "NI-2026-014");
-        c2.put("title", "Apex Traders vs Rohan Kumar");
-        c2.put("category", "Special / Statutory");
-        c2.put("caseType", "Cheque Dishonour");
-        c2.put("currentStage", "Statutory Waiting Period (15 Days)");
-        c2.put("priority", "High");
-        c2.put("status", "Active");
-        c2.put("assignedLawyer", "Adv. Sunita Rao");
-        cases.add(c2);
+    @Autowired
+    public CaseController(CaseService caseService, JwtUtils jwtUtils) {
+        this.caseService = caseService;
+        this.jwtUtils = jwtUtils;
+        this.caseService.seedInitialData();
+    }
 
+    @GetMapping("/cases")
+    public ResponseEntity<List<CaseEntity>> getAllCases() {
+        List<CaseEntity> cases = caseService.getAllCases();
         return ResponseEntity.ok(cases);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> getCaseById(@PathVariable String id) {
-        Map<String, Object> c = new HashMap<>();
-        c.put("id", id);
-        c.put("caseNumber", "CR-2026-001");
-        c.put("title", "State vs Rahul Sharma");
-        c.put("category", "Criminal");
-        c.put("caseType", "Murder");
-        c.put("court", "Sessions Court, Division I");
-        c.put("currentStage", "Evidence Stage");
-        c.put("priority", "High");
-        c.put("status", "Active");
-        return ResponseEntity.ok(c);
+    @GetMapping("/cases/{id}")
+    public ResponseEntity<CaseEntity> getCaseById(@PathVariable String id) {
+        return caseService.getCaseById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PostMapping
-    public ResponseEntity<Map<String, Object>> createCase(@RequestBody Map<String, Object> payload) {
-        payload.put("id", "case-" + System.currentTimeMillis());
-        payload.put("status", "Active");
-        return ResponseEntity.status(201).body(payload);
+    @PostMapping("/cases")
+    public ResponseEntity<CaseEntity> createCase(@RequestBody CaseEntity newCase) {
+        CaseEntity created = caseService.createCase(newCase);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    }
+
+    @PatchMapping("/cases/{id}/stage")
+    public ResponseEntity<CaseEntity> updateStage(
+            @PathVariable String id,
+            @RequestBody StageUpdateRequest request) {
+        return caseService.updateCaseStage(id, request.getNewStage())
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    // Deficiency Endpoints
+    @GetMapping("/cases/{id}/deficiencies")
+    public ResponseEntity<List<DeficiencyEntity>> getDeficiencies(@PathVariable String id) {
+        return ResponseEntity.ok(caseService.getDeficienciesByCaseId(id));
+    }
+
+    @PostMapping("/cases/{id}/deficiencies")
+    public ResponseEntity<DeficiencyEntity> raiseDeficiency(
+            @PathVariable String id,
+            @RequestBody DeficiencyEntity deficiency) {
+        DeficiencyEntity created = caseService.raiseDeficiency(id, deficiency);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    }
+
+    @PatchMapping("/deficiencies/{deficiencyId}/resolve")
+    public ResponseEntity<DeficiencyEntity> resolveDeficiency(
+            @PathVariable String deficiencyId,
+            @RequestBody Map<String, String> request) {
+        String remark = request.getOrDefault("remark", "Deficiency addressed by applicant.");
+        return caseService.resolveDeficiency(deficiencyId, remark)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    // Registration Endpoint
+    @PostMapping("/cases/{id}/register")
+    public ResponseEntity<CaseEntity> approveRegistration(
+            @PathVariable String id,
+            @RequestBody Map<String, String> request) {
+        String assignedJudge = request.get("judge");
+        String assignedCourtroom = request.get("courtroom");
+        return caseService.approveRegistration(id, assignedJudge, assignedCourtroom)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    // Audit Trail Endpoint
+    @GetMapping("/cases/{id}/audit")
+    public ResponseEntity<List<AuditLogEntity>> getAuditLogs(@PathVariable String id) {
+        return ResponseEntity.ok(caseService.getAuditLogsByCaseId(id));
+    }
+
+    // Auth Login Endpoint (Generates Real HMAC-SHA256 Signed JWT)
+    @PostMapping("/auth/login")
+    public ResponseEntity<?> login(@RequestBody Map<String, String> credentials) {
+        String email = credentials.get("email");
+        String password = credentials.get("password");
+        return caseService.loginUser(email, password)
+                .map(user -> {
+                    String token = jwtUtils.generateToken(user.getId(), user.getEmail(), user.getRole());
+                    Map<String, Object> resp = new HashMap<>();
+                    resp.put("token", token);
+                    resp.put("user", user);
+                    return ResponseEntity.ok(resp);
+                })
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "Invalid credentials")));
+    }
+
+    // Direct Token Issuer for Demo Role Switcher
+    @GetMapping("/auth/token")
+    public ResponseEntity<?> getTokenForRole(@RequestParam(defaultValue = "JUDGE") String role) {
+        String token = jwtUtils.generateToken("demo-" + role.toLowerCase(), role.toLowerCase() + "@lexflow.gov", role);
+        return ResponseEntity.ok(Map.of("token", token, "role", role));
+    }
+
+    public static class StageUpdateRequest {
+        private String newStage;
+        public String getNewStage() { return newStage; }
+        public void setNewStage(String newStage) { this.newStage = newStage; }
     }
 }

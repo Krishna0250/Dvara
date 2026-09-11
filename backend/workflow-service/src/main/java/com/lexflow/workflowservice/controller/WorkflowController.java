@@ -1,7 +1,11 @@
 package com.lexflow.workflowservice.controller;
 
+import com.lexflow.workflowservice.entity.WorkflowStageEntity;
+import com.lexflow.workflowservice.service.WorkflowService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.*;
 
 @RestController
@@ -9,37 +13,32 @@ import java.util.*;
 @CrossOrigin(origins = "*")
 public class WorkflowController {
 
+    private final WorkflowService workflowService;
+
+    @Autowired
+    public WorkflowController(WorkflowService workflowService) {
+        this.workflowService = workflowService;
+        this.workflowService.seedInitialData();
+    }
+
     @GetMapping("/templates/{caseType}")
     public ResponseEntity<Map<String, Object>> getTemplateByCaseType(@PathVariable String caseType) {
+        List<WorkflowStageEntity> stages = workflowService.getStagesByCaseType(caseType);
+
         Map<String, Object> template = new HashMap<>();
         template.put("caseType", caseType);
         template.put("name", caseType + " Procedural Workflow Template");
-
-        List<Map<String, Object>> stages = new ArrayList<>();
-        Map<String, Object> stg1 = new HashMap<>();
-        stg1.put("id", "s1");
-        stg1.put("title", "Initiation / Filing");
-        stg1.put("status", "completed");
-        stages.add(stg1);
-
-        Map<String, Object> stg2 = new HashMap<>();
-        stg2.put("id", "s2");
-        stg2.put("title", "Evidence & Hearing");
-        stg2.put("status", "current");
-        stages.add(stg2);
-
         template.put("stages", stages);
+
         return ResponseEntity.ok(template);
     }
 
     @GetMapping("/next-action/{caseId}")
-    public ResponseEntity<Map<String, Object>> getNextAction(@PathVariable String caseId) {
-        Map<String, Object> nextAction = new HashMap<>();
-        nextAction.put("caseId", caseId);
-        nextAction.put("currentStage", "Evidence Stage");
-        nextAction.put("suggestedAction", "Schedule witness cross-examination and prepare affidavit in chief.");
-        nextAction.put("conditions", Arrays.asList("Charges framed: YES", "PW examination: PENDING"));
-        nextAction.put("disclaimer", "Procedural guidance recommendation based on BNSS / CrPC framework.");
+    public ResponseEntity<Map<String, Object>> getNextAction(
+            @PathVariable String caseId,
+            @RequestParam(required = false, defaultValue = "Evidence & Hearing") String currentStage,
+            @RequestParam(required = false) String filingStatus) {
+        Map<String, Object> nextAction = workflowService.computeNextAction(caseId, currentStage, filingStatus);
         return ResponseEntity.ok(nextAction);
     }
 }

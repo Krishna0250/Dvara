@@ -156,8 +156,60 @@ export interface NextActionEngineResult {
   disclaimer: string;
 }
 
+export type FilingStatus = 'DRAFT' | 'SUBMITTED' | 'UNDER_SCRUTINY' | 'DEFICIENT' | 'REGISTERED' | 'DISPOSED';
+export type UserRole = 'CITIZEN' | 'ADVOCATE' | 'CLERK' | 'SCRUTINY_OFFICER' | 'REGISTRAR' | 'JUDGE' | 'ADMIN';
+
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+  role: UserRole;
+  barRegistrationNumber?: string;
+  court?: string;
+  designation?: string;
+}
+
+export interface Deficiency {
+  id: string;
+  caseId: string;
+  documentId?: string;
+  documentTitle?: string;
+  raisedBy: string;
+  reason: string;
+  status: 'OPEN' | 'RESPONDED' | 'UNDER_REVIEW' | 'RESOLVED';
+  createdAt: string;
+  resolvedAt?: string;
+  remark?: string;
+}
+
+export interface AuditLog {
+  id: string;
+  caseId: string;
+  actor: string;
+  role: UserRole;
+  action: string;
+  previousState?: string;
+  newState?: string;
+  details: string;
+  timestamp: string;
+}
+
+export interface JudicialOrder {
+  id: string;
+  caseId: string;
+  hearingId?: string;
+  orderType: 'INTERIM' | 'PROCEDURAL' | 'FINAL' | 'ADMINISTRATIVE';
+  title: string;
+  issuedByJudge: string;
+  issuedDate: string;
+  content: string;
+  documentUrl?: string;
+}
+
 export interface Case {
   id: string;
+  filingId?: string;
+  filingStatus?: FilingStatus;
   caseNumber: string;
   title: string;
   category: CaseCategory;
@@ -167,8 +219,11 @@ export interface Case {
   applicableLaw: string;
   applicableSection?: string;
   court: string;
+  assignedCourtroom?: string;
+  judge?: string;
   jurisdiction: string;
   filingDate: string;
+  registrationDate?: string;
   assignedLawyer: string;
   priority: PriorityLevel;
   status: CaseStatus;
@@ -182,5 +237,8 @@ export interface Case {
   documents: LegalDocument[];
   hearings: Hearing[];
   deadlines: Deadline[];
+  deficiencies?: Deficiency[];
+  auditLogs?: AuditLog[];
+  orders?: JudicialOrder[];
   nextAction: NextActionEngineResult;
 }

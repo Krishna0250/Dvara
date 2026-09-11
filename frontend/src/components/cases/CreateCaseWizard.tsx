@@ -211,7 +211,7 @@ export const CreateCaseWizard: React.FC<CreateCaseWizardProps> = ({
 
             {/* Quick Law Provision Selector */}
             <div className="bg-indigo-50/70 p-3.5 rounded-xl border border-indigo-200/80 space-y-2">
-              <label className="text-xs font-bold text-indigo-900 block flex items-center justify-between">
+              <label className="text-xs font-bold text-indigo-900 flex items-center justify-between">
                 <span>Select Law / Provision from Legal Library:</span>
                 <span className="text-[10px] text-indigo-600 font-mono font-normal">Auto-maps Procedural Ruleset</span>
               </label>

@@ -1,33 +1,54 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Sidebar } from './components/layout/Sidebar';
 import { Header } from './components/layout/Header';
 import { DashboardView } from './components/dashboard/DashboardView';
 import { CaseListView } from './components/cases/CaseListView';
 import { CaseDetailView } from './components/cases/CaseDetailView';
 import { CreateCaseWizard } from './components/cases/CreateCaseWizard';
+import { ScrutinyView } from './components/cases/ScrutinyView';
 import { HearingsView } from './components/hearings/HearingsView';
 import { DeadlinesView } from './components/deadlines/DeadlinesView';
 import { DocumentsView } from './components/documents/DocumentsView';
 import { NextActionEngineView } from './components/workflow/NextActionEngineView';
 import { LawLibraryView } from './components/laws/LawLibraryView';
 import { INITIAL_CASES } from './data/mockData';
-import type { Case } from './types/legal';
+import { api, setAuthTokenForRole } from './api/apiClient';
+import type { Case, UserRole } from './types/legal';
 
 export const App: React.FC = () => {
   const [cases, setCases] = useState<Case[]>(INITIAL_CASES);
   const [activeTab, setActiveTab] = useState<string>('dashboard');
   const [selectedCaseId, setSelectedCaseId] = useState<string | null>(null);
   const [isCreatingCase, setIsCreatingCase] = useState<boolean>(false);
+  const [currentRole, setCurrentRole] = useState<UserRole>('JUDGE');
+
+  const fetchCases = async () => {
+    const fetchedCases = await api.getCases();
+    if (fetchedCases && fetchedCases.length > 0) {
+      setCases(fetchedCases);
+    }
+  };
+
+  useEffect(() => {
+    setAuthTokenForRole(currentRole);
+    fetchCases();
+  }, []);
+
+  const handleRoleChange = async (newRole: UserRole) => {
+    setCurrentRole(newRole);
+    await setAuthTokenForRole(newRole);
+  };
 
   const handleSelectCase = (caseId: string) => {
     setSelectedCaseId(caseId);
     setIsCreatingCase(false);
   };
 
-  const handleCreateCase = (newCase: Case) => {
-    setCases([newCase, ...cases]);
+  const handleCreateCase = async (newCase: Case) => {
+    const created = await api.createCase(newCase);
+    await fetchCases();
     setIsCreatingCase(false);
-    setSelectedCaseId(newCase.id);
+    setSelectedCaseId(created.id);
   };
 
   const handleAddEventToCase = (caseId: string, newEvent: any) => {
@@ -62,6 +83,8 @@ export const App: React.FC = () => {
           }}
           onSelectCase={handleSelectCase}
           cases={cases}
+          currentRole={currentRole}
+          onRoleChange={handleRoleChange}
         />
 
         <main className="flex-1 pb-16">
@@ -73,6 +96,7 @@ export const App: React.FC = () => {
           ) : selectedCaseId && activeCaseData ? (
             <CaseDetailView 
               caseData={activeCaseData} 
+              currentRole={currentRole}
               onBack={() => setSelectedCaseId(null)}
               onAddEvent={handleAddEventToCase}
             />
@@ -84,6 +108,14 @@ export const App: React.FC = () => {
                   onSelectCase={handleSelectCase} 
                   onOpenCreateCase={() => setIsCreatingCase(true)}
                   onNavigateTab={(t) => setActiveTab(t)}
+                />
+              )}
+              {activeTab === 'scrutiny' && (
+                <ScrutinyView 
+                  cases={cases}
+                  currentRole={currentRole}
+                  onRefreshCases={fetchCases}
+                  onSelectCase={handleSelectCase}
                 />
               )}
               {activeTab === 'laws' && (
